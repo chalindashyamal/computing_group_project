@@ -31,7 +31,7 @@ nav .fa-bars {
 .welcome {
     padding: 50px 100px;
     margin-top: -140px;
-    background-color: #fff;
+    background-color: #fffffff0;
     box-shadow: 0 0 20px 7px rgba(0, 0, 0, 0.375);
 }
 .welcome h1 {
@@ -223,11 +223,12 @@ nav .fa-bars {
     /* margin-top: 80px; */
     padding: 100px;
     background-image: linear-gradient(
-            rgba(0, 0, 0, 0.726),
-            rgba(0, 0, 0, 0.725)
+            rgba(255, 255, 255, 0.353),
+            rgba(0 0 0 / 68%)
         ),
-        url(img/bg04.jpg);
+        url(img/bus_footer.jpeg);
     color: #ffffff;
+    background-repeat: no-repeat;
 }
 
 .footer-logo {

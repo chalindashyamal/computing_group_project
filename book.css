@@ -1,0 +1,159 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+html {
+    scroll-behavior: smooth;
+}
+#header {
+    background-image: url(img/book_now.jpeg);
+    height: 80vh;
+    background-size: cover;
+    background-position: center;
+}
+.navbar-nav li a {
+    float: right;
+    color: #000000 !important;
+}
+.navbar-brand img {
+    width: 150px;
+    margin-left: 30px;
+}
+.navbar-toggler {
+    border: none !important;
+    outline: none !important;
+}
+nav .fa-bars {
+    color: #000000 !important;
+    font-size: 26px;
+}
+/* welcome text */
+.welcome {
+    padding: 50px 100px;
+    margin-top: -140px;
+    background-color: #fffffff0;
+    box-shadow: 0 0 20px 7px rgba(0, 0, 0, 0.375);
+    margin-bottom: 50px;
+}
+.welcome h1 {
+    color: #333;
+}
+
+
+
+body 		 { padding-bottom:50px; }
+.times 	 { margin-bottom:50px; }
+
+/* checkbox - each time slot */
+.time-slot 				{  }
+.time-slot input 	 { display:none; }
+.time-slot label 	 { 
+  padding:10px 20px; 
+  color:#FFF; 
+  cursor:pointer; 
+  background:#EEE; 
+  border-radius:5px; 
+	transition:0.3s ease all;
+  -moz-transition:0.3s ease all;
+  -webkit-transition:0.3s ease all;
+}
+
+.time-slot input:checked ~ label { 
+  background:#f2dede; 
+  cursor:not-allowed;
+  animation:flashBooked 0.5s ease; 
+  -moz-animation:flashBooked 0.5s ease; 
+  -webkit-animation:flashBooked 0.5s ease; 
+}
+
+.time-slot input:not(:checked) ~ label { 
+  background:#6AB074; 
+  animation:flashAvailable 0.5s ease; 
+  -moz-animation:flashAvailable 0.5s ease; 
+  -webkit-animation:flashAvailable 0.5s ease; 
+}
+
+@keyframes flashBooked {
+  0%, 100% { background:#f2dede; transform:scale(1); }
+  50% 		{ background:#F99090; transform:scale(1.5); }
+}
+@-moz-keyframes flashBooked {
+  0%, 100% { background:#f2dede; transform:scale(1); }
+  50% 		{ background:#F99090; transform:scale(1.5); }
+}
+@-webkit-keyframes flashBooked {
+  0%, 100% { background:#f2dede; transform:scale(1); }
+  50% 		{ background:#F99090; transform:scale(1.5); }
+}
+
+@keyframes flashAvailable {
+  0%, 100% { background:#6AB074; transform:scale(1); }
+  50% 		{ background:rgb(119, 218, 78); transform:scale(1.5); }
+}
+@-moz-keyframes flashAvailable {
+  0%, 100% { background:#6AB074; transform:scale(1); }
+  50% 		{ background:rgb(119, 218, 78); transform:scale(1.5); }
+}
+@-webkit-keyframes flashAvailable {
+  0%, 100% { background:#6AB074; transform:scale(1); }
+  50% 		{ background:rgb(119, 218, 78); transform:scale(1.5); }
+}
+
+
+/* <!-- footer section --> */
+#footer {
+  /* margin-top: 80px; */
+
+  background-image: linear-gradient(
+          rgba(255, 255, 255, 0.353),
+          rgba(0 0 0 / 68%)
+      ),
+      url(img/bus_footer.jpeg);
+  color: #ffffff;
+  background-repeat: no-repeat;
+}
+
+.footer-logo {
+    width: 150px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+#footer h1 {
+    font-size: 18px;
+    text-align: left;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+#footer p {
+    font-size: 12px;
+    text-align: left;
+}
+
+#footer .fa-brands,
+#footer .fa-solid {
+    padding-right: 20px;
+    font-size: 15px;
+}
+#footer hr .row {
+    margin-top: 10px;
+}
+
+#footer .copyright {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: -80px;
+}
+/* small src responsive */
+@media only screen and (max-width: 900px) {
+    .embed-responsive iframe {
+        width: 100%;
+        min-height: auto;
+    }
+
+    .feature-box .feature-right {
+        height: 290px;
+    }
+    .col-md-6 {
+        width: 100%;
+        margin-top: 20px;}
+}

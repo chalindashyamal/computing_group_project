@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="contact.css" />
+    <link rel="stylesheet" href="book.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -34,7 +34,8 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
-    <title>Bus Tracking System-Contact Us</title>
+
+    <title>Bus Tracking System-book now</title>
   </head>
 
   <body>
@@ -79,100 +80,56 @@
     <section id="welcome">
       <div class="container">
         <div class="welcome text-center wow slideInLeft">
-          <h1>SIGN IN TO TRACK YOUR BUS OR REGISTER FOR UPDATES.</h1>
+          <h1>EXPLORE OUR SHEET BOOKING PAGE TO RESERVE SEATS</h1>
         </div>
       </div>
     </section>
 
-    <!-- login/register  -->
-    <section id="about">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-5 text-center">
-            <img src="img/Login_side.jpeg" class="img-fluid" />
-          </div>
-          <div class="col-md-6 text-justify">
-            <!-- Login Form -->
-            <div class="form-container" id="loginForm">
-              <h3>Login</h3>
-              <form>
-                <div class="form-group">
-                  <label for="loginEmail">Email address</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="loginEmail"
-                    aria-describedby="emailHelp"
-                    placeholder="Enter email"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="loginPassword">Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="loginPassword"
-                    placeholder="Password"
-                  />
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
-            </div>
+    <div class="container" ng-app="scheduleApp" ng-controller="mainController">
+      <div class="page-header text-center">
+        <h1>Schedule City</h1>
+        <p>
+          Real-time scheduling demo using
+          <a href="https://firebase.com" target="_blank">Firebase</a> and
+          <a href="https://angularjs.org" target="_blank">AngularJS</a> by
+          <a
+            href="https://scotch.io/tutorials/javascript/build-a-real-time-scheduling-app-using-angularjs-and-firebase"
+            target="_blank"
+            >scotch.io</a
+          >.
+        </p>
+      </div>
 
-            <!-- Register Form -->
-            <div class="form-container" id="registerForm" style="display: none">
-              <h3>Register</h3>
-              <form>
-                <div class="form-group">
-                  <label for="registerName">Full Name</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="registerName"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="registerEmail">Email address</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="registerEmail"
-                    aria-describedby="emailHelp"
-                    placeholder="Enter email"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="registerPassword">Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="registerPassword"
-                    placeholder="Password"
-                  />
-                </div>
-                <button id="btn_submit" type="submit" class="btn btn-primary">
-                  Submit
-                </button>
-              </form>
-            </div>
+      <p class="text-center">
+        What time would you like to meet?<br /><strong class="text-info"
+          >Quick! Other people are booking times too!</strong
+        >
+      </p>
 
-            <!-- Buttons to toggle forms -->
-            <div>
-              <button onclick="toggleForm('loginForm')" class="btn btn-primary">
-                Login
-              </button>
-              <button
-                onclick="toggleForm('registerForm')"
-                class="btn btn-primary"
-              >
-                Register
-              </button>
-            </div>
+      <div class="row times">
+        <div class="col-xs-4 text-center" ng-repeat="day in days">
+          <h2>{{ day.name }}</h2>
+
+          <div class="time-slot" ng-repeat="slot in day.slots">
+            <input
+              type="checkbox"
+              id="{{ day.name }}-{{ $index }}"
+              ng-model="slot.booked"
+              ng-disabled="slot.booked"
+            />
+            <label for="{{ day.name }}-{{ $index }}"
+              >{{ slot.time }}<br />
+              <span ng-if="slot.booked">Booked</span>
+              <span ng-if="!slot.booked">Available</span>
+            </label>
           </div>
         </div>
       </div>
-    </section>
+
+      <p class="text-center">
+        <a href="#" ng-click="reset()" class="btn btn-primary">Reset</a>
+      </p>
+    </div>
 
     <!-- footer section -->
 
@@ -223,44 +180,5 @@
         </p>
       </div>
     </section>
-
-    <!-- smooth scroll js -->
-    <!-- <script src="js/smooth-scroll.js"></script>
-        <script>
-            var scroll = new SmoothScroll('a[href*="#"]');
-        </script> -->
-
-    <script>
-      function toggleForm(formId) {
-        var forms = document.querySelectorAll(".form-container");
-        forms.forEach(function (form) {
-          if (form.id === formId) {
-            form.style.display = "block";
-          } else {
-            form.style.display = "none";
-          }
-        });
-      }
-    </script>
-
-    <!-- login -->
-
-    <script>
-      function toggleForm(formId) {
-        var forms = document.querySelectorAll(".form-container");
-        forms.forEach(function (form) {
-          if (form.id === formId) {
-            form.style.display = "block";
-          } else {
-            form.style.display = "none";
-          }
-        });
-      }
-    </script>
-
-    <script src="js/wow.min.js"></script>
-    <script>
-      new WOW().init();
-    </script>
   </body>
 </html>
