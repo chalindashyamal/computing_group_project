@@ -5,6 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="pick_bus.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css"
+    />
+
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -86,6 +96,87 @@
         </div>
       </div>
     </section>
+
+    <div id="map" style="width: 100%; height: 80vh"></div>
+    <button class="geo-btn btn text-white bg-primary shadow-none mt-3">
+      Get Current Location
+    </button>
+    <div class="showDetails"></div>
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+    <script>
+      var map = L.map("map").setView(
+        [6.821556181937362, 80.04158353165411],
+        11
+      );
+      mapLink = "<a href='http://openstreetmap.org'>OpenStreetMap</a>";
+      L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+        attribution: "Leaflet &copy; " + mapLink + ", contribution",
+        maxZoom: 18,
+      }).addTo(map);
+
+      var taxiIcon = L.icon({
+        iconUrl: "img/bus2-re.png",
+        iconSize: [70, 70],
+      });
+
+      var marker = L.marker([6.821556181937362, 80.04158353165411], {
+        icon: taxiIcon,
+      }).addTo(map);
+
+      var routingControl = null;
+
+      function updateMarkerAndRoute(latitude, longitude) {
+        marker.setLatLng([latitude, longitude]);
+        if (routingControl !== null) {
+          map.removeControl(routingControl);
+        }
+        routingControl = L.Routing.control({
+          waypoints: [
+            L.latLng(latitude, longitude),
+            L.latLng(6.821556181937362, 80.04158353165411),
+          ],
+        }).addTo(map);
+      }
+
+      document.querySelector(".geo-btn").addEventListener("click", function () {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              updateMarkerAndRoute(latitude, longitude);
+              document.querySelector(
+                ".showDetails"
+              ).textContent = `the latitude ${latitude} & longitude ${longitude}`;
+            },
+            (error) => {
+              document.querySelector(".showDetails").textContent =
+                error.message;
+              console.log(error.message);
+            }
+          );
+        }
+        setInterval(function () {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const { latitude, longitude } = position.coords;
+                updateMarkerAndRoute(latitude, longitude);
+                document.querySelector(
+                  ".showDetails"
+                ).textContent = `the latitude ${latitude} & longitude ${longitude}`;
+              },
+              (error) => {
+                document.querySelector(".showDetails").textContent =
+                  error.message;
+                console.log(error.message);
+              }
+            );
+          }
+        }, 5000); // 5 seconds
+      });
+    </script>
 
     <!-- footer section -->
 
