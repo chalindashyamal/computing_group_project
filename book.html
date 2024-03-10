@@ -175,50 +175,105 @@
         </div>
       </div>
     </div>
-    <div class="container" ng-app="scheduleApp" ng-controller="mainController">
-      <div class="page-header text-center">
-        <h1>Schedule City</h1>
-        <p>
-          Real-time scheduling demo using
-          <a href="https://firebase.com" target="_blank">Firebase</a> and
-          <a href="https://angularjs.org" target="_blank">AngularJS</a> by
-          <a
-            href="https://scotch.io/tutorials/javascript/build-a-real-time-scheduling-app-using-angularjs-and-firebase"
-            target="_blank"
-            >scotch.io</a
-          >.
-        </p>
-      </div>
 
-      <p class="text-center">
-        What time would you like to meet?<br /><strong class="text-info"
-          >Quick! Other people are booking times too!</strong
-        >
-      </p>
+    <!-- seat selection -->
 
-      <div class="row times">
-        <div class="col-xs-4 text-center" ng-repeat="day in days">
-          <h2>{{ day.name }}</h2>
-
-          <div class="time-slot" ng-repeat="slot in day.slots">
-            <input
-              type="checkbox"
-              id="{{ day.name }}-{{ $index }}"
-              ng-model="slot.booked"
-              ng-disabled="slot.booked"
-            />
-            <label for="{{ day.name }}-{{ $index }}"
-              >{{ slot.time }}<br />
-              <span ng-if="slot.booked">Booked</span>
-              <span ng-if="!slot.booked">Available</span>
-            </label>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card mt-4">
+            <div class="card-body">
+              <h5 class="card-title">Seat Selection</h5>
+              <form id="seatSelectionForm">
+                <div class="form-group">
+                  <label for="Username">Name *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="Username"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="Numseats">Number of Seats *</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="Numseats"
+                    required
+                  />
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-primary mt-3"
+                  onclick="takeData()"
+                >
+                  Start Selecting
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card mt-4">
+            <div class="card-body">
+              <h5 class="card-title">Selected Seats</h5>
+              <table class="table Displaytable">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Number of Seats</th>
+                    <th>Seats</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <textarea
+                        id="nameDisplay"
+                        class="form-control"
+                        readonly
+                      ></textarea>
+                    </td>
+                    <td>
+                      <textarea
+                        id="NumberDisplay"
+                        class="form-control"
+                        readonly
+                      ></textarea>
+                    </td>
+                    <td>
+                      <textarea
+                        id="seatsDisplay"
+                        class="form-control"
+                        readonly
+                      ></textarea>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
 
-      <p class="text-center">
-        <a href="#" ng-click="reset()" class="btn btn-primary">Reset</a>
-      </p>
+      <div class="row justify-content-center">
+        <div class="col-md-8 seatStructure">
+          <table class="table">
+            <tbody id="seatsBlock">
+              <!-- Seat selection grid will be dynamically generated here -->
+            </tbody>
+          </table>
+          <button
+            type="button"
+            class="btn btn-success"
+            onclick="updateTextArea()"
+          >
+            Confirm Selection
+          </button>
+          <p id="errorMessage" class="text-danger mt-2"></p>
+        </div>
+      </div>
     </div>
 
     <!-- footer section -->
@@ -270,5 +325,71 @@
         </p>
       </div>
     </section>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      function takeData() {
+        if (
+          $("#Username").val().length == 0 ||
+          $("#Numseats").val().length == 0
+        ) {
+          alert("Please Enter your Name and Number of Seats");
+        } else {
+          $(".inputForm *").prop("disabled", true);
+          $(".seatStructure *").prop("disabled", false);
+          $("#notification").html(
+            "<b style='margin-bottom:0px;background:yellow;'>Please Select your Seats NOW!</b>"
+          );
+          generateSeats();
+        }
+      }
+
+      function updateTextArea() {
+        var numSeats = parseInt($("#Numseats").val());
+        var selectedSeats = $("input:checked").length;
+        if (selectedSeats !== numSeats) {
+          $("#errorMessage").text(
+            "Please select exactly " + numSeats + " seats."
+          );
+        } else {
+          $("#errorMessage").text("");
+          var allNameVals = [];
+          var allNumberVals = [];
+          var allSeatsVals = [];
+
+          allNameVals.push($("#Username").val());
+          allNumberVals.push(numSeats);
+          $(".seats:checked").each(function () {
+            allSeatsVals.push($(this).val());
+          });
+
+          $("#nameDisplay").val(allNameVals);
+          $("#NumberDisplay").val(allNumberVals);
+          $("#seatsDisplay").val(allSeatsVals);
+        }
+      }
+
+      function generateSeats() {
+        var rows = ["A", "B", "C", "D", "E"];
+        var cols = 12;
+        var seatsBlock = $("#seatsBlock");
+        seatsBlock.empty();
+        for (var i = 0; i < rows.length; i++) {
+          var row = $("<tr>");
+          row.append($("<td>").text(rows[i]));
+          for (var j = 1; j <= cols; j++) {
+            var seat = $("<input>")
+              .attr("type", "checkbox")
+              .addClass("seats")
+              .val(rows[i] + j);
+            var seatCell = $("<td>").append(seat);
+            row.append(seatCell);
+          }
+          seatsBlock.append(row);
+        }
+      }
+    </script>
   </body>
 </html>
