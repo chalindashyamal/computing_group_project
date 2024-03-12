@@ -162,6 +162,7 @@
             navigator.geolocation.getCurrentPosition(
               (position) => {
                 const { latitude, longitude } = position.coords;
+
                 updateMarkerAndRoute(latitude, longitude);
                 document.querySelector(
                   ".showDetails"
