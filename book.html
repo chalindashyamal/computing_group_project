@@ -116,12 +116,8 @@
                     <h5 class="mb-3" style="font-size: 18px">
                       Check Availability
                     </h5>
-                    <label class="form-label">Start Location</label>
+                    <label class="form-label">Enter route Number</label>
                     <input type="text" class="form-control shadow-none mb-3" />
-                    <label class="form-label">End Location</label>
-                    <input type="text" class="form-control shadow-none" />
-                    <label class="form-label">Select Your Date And Time</label>
-                    <input type="date" class="form-control shadow-none mb-3" />
                   </div>
                   <div class="col-lg-1 mb-lg-3 mt-2">
                     <button
@@ -137,38 +133,10 @@
           </nav>
         </div>
         <div class="col-lg-9 col-md-12 px-5">
-          <div
-            class="card mb-3 border-0 shadow"
-            style="height: 400px; width: 350px"
-          >
-            <div class="row g-0 mt-3">
-              <div class="col-md-7 px-lg-3">
-                <div class="card-body">
-                  <h5 class="card-title">Bus Number</h5>
-                  <h6 class="card-subtitle mb-3 text-muted">138</h6>
-                  <div class="features mb-3">
-                    <h6 class="mb-1">Destination</h6>
-                    <span class="badge rounded-pill bg-light text-dark"
-                      >Nugegoda</span
-                    >
-                  </div>
-                  <div class="facilities mb-3">
-                    <h6 class="mb-1">Arrival Time</h6>
-                    <span class="badge rounded-pill bg-light text-dark"
-                      >4.30pm</span
-                    >
-                  </div>
-                  <h6 class="mb-1">Depature Time</h6>
-                  <span class="badge rounded-pill bg-light text-dark"
-                    >4.45pm</span
-                  >
-                  <button
-                    type="submit"
-                    class="btn bg-primary text-white shadow-none mt-3"
-                  >
-                    Book Your Seat
-                  </button>
-                </div>
+          <div class="card mb-3 border-0 shadow">
+            <div class="col-md-7 px-lg-3">
+              <div class="card-body" id="busList">
+                <!-- Bus information will be displayed here -->
               </div>
             </div>
           </div>
@@ -390,6 +358,73 @@
           seatsBlock.append(row);
         }
       }
+    </script>
+
+    <script type="module">
+      // Import Firebase modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+      // Firebase configuration (same as before)
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCKYdEtZmhE_GLfR1LsIKf75e_YbQjDvSs",
+        authDomain: "computing-project-f65ec.firebaseapp.com",
+        databaseURL:
+          "https://computing-project-f65ec-default-rtdb.firebaseio.com",
+        projectId: "computing-project-f65ec",
+        storageBucket: "computing-project-f65ec.appspot.com",
+        messagingSenderId: "126022707574",
+        appId: "1:126022707574:web:795b761b783e0dfa62f257",
+        measurementId: "G-XG2N2HVR9M",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+
+      // Get reference to the buses node in the database
+      const busesRef = ref(database, "buses");
+
+      // Function to render bus information in HTML
+      function renderBus(bus) {
+        const busList = document.getElementById("busList");
+        const busElement = document.createElement("div");
+        busElement.innerHTML = `
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">${bus.bus_number}</h5>
+          <p class="card-text">Destination: ${bus.destination}</p>
+          <p class="card-text">Arrival Time: ${bus.arrival_time}</p>
+          <p class="card-text">Departure Time: ${bus.departure_time}</p>
+          <!-- Add other fields as needed -->
+          <button
+                    type="submit"
+                    class="btn bg-primary text-white shadow-none mt-3"
+                  >
+                    Book Your Seat
+                  </button>
+        </div>
+      </div>
+    `;
+        busList.appendChild(busElement);
+      }
+
+      // Listen for changes in the bus data and render them
+      onValue(busesRef, (snapshot) => {
+        const busesData = snapshot.val();
+        // Clear previous bus information
+        document.getElementById("busList").innerHTML = "";
+        // Render each bus
+        for (const busId in busesData) {
+          const bus = busesData[busId];
+          renderBus(bus);
+        }
+      });
     </script>
   </body>
 </html>
