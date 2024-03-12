@@ -76,7 +76,7 @@
       <div class="row">
         <div class="col-lg-10 ms-auto p-4 overflow-hidden">
           <h3 class="mb-4">Add New Bus</h3>
-          <form class="custom-form rounded" action="" method="post">
+          <form id="busRegistrationForm" class="custom-form rounded">
             <div class="modal-header">
               <h1 class="modal-title fs-5 d-flex align-items-center">
                 <i class="bi bi-person-lines-fill fs-3 me-2"></i>Bus
@@ -165,5 +165,59 @@
         </div>
       </div>
     </div>
+
+    <script type="module">
+      // Import Firebase modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        push,
+      } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCKYdEtZmhE_GLfR1LsIKf75e_YbQjDvSs",
+        authDomain: "computing-project-f65ec.firebaseapp.com",
+        databaseURL:
+          "https://computing-project-f65ec-default-rtdb.firebaseio.com",
+        projectId: "computing-project-f65ec",
+        storageBucket: "computing-project-f65ec.appspot.com",
+        messagingSenderId: "126022707574",
+        appId: "1:126022707574:web:795b761b783e0dfa62f257",
+        measurementId: "G-XG2N2HVR9M",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+
+      // Form submission
+      const busRegistrationForm = document.getElementById(
+        "busRegistrationForm"
+      );
+      busRegistrationForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        // Get form data
+        const formData = new FormData(busRegistrationForm);
+        const busData = {};
+        formData.forEach((value, key) => {
+          busData[key] = value;
+        });
+
+        // Store data in Firebase database
+        const busesRef = ref(database, "buses");
+        push(busesRef, busData)
+          .then(() => {
+            alert("Bus registered successfully!");
+            busRegistrationForm.reset(); // Clear form fields
+          })
+          .catch((error) => {
+            console.error("Error registering bus: ", error);
+            alert("Failed to register bus. Please try again.");
+          });
+      });
+    </script>
   </body>
 </html>
