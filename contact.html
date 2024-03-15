@@ -106,7 +106,7 @@
               </form>
             </div>
             <!-- Register Form -->
-            <div class="form-container" id="registerForm">
+            <div class="form-container" id="registerForm" style="display: none">
               <h3>Register</h3>
               <form>
                 <div class="form-group">
@@ -232,18 +232,22 @@
     <script>
       new WOW().init();
     </script>
+
     <script>
       function toggleForm(formId) {
-        var forms = document.querySelectorAll(".form-container");
-        forms.forEach(function (form) {
-          if (form.id === formId) {
-            form.style.display = "block";
-          } else {
-            form.style.display = "none";
-          }
-        });
-      }
+        var loginForm = document.getElementById("loginForm");
+        var registerForm = document.getElementById("registerForm");
 
+        if (formId === "loginForm") {
+          loginForm.style.display = "block";
+          registerForm.style.display = "none";
+        } else if (formId === "registerForm") {
+          loginForm.style.display = "none";
+          registerForm.style.display = "block";
+        }
+      }
+    </script>
+    <script>
       // Import Firebase modules
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
       import {
