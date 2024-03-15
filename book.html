@@ -117,12 +117,17 @@
                       Check Availability
                     </h5>
                     <label class="form-label">Enter route Number</label>
-                    <input type="text" class="form-control shadow-none mb-3" />
+                    <input
+                      type="text"
+                      class="form-control shadow-none mb-3"
+                      id="routeInput"
+                    />
                   </div>
                   <div class="col-lg-1 mb-lg-3 mt-2">
                     <button
                       type="submit"
                       class="btn bg-primary text-white shadow-none"
+                      id="searchButton"
                     >
                       Search
                     </button>
@@ -135,7 +140,8 @@
         <div class="col-lg-9 col-md-12 px-5">
           <div class="card mb-3 border-0 shadow">
             <div class="col-md-7 px-lg-3">
-              <div class="card-body" id="busList">
+              <div class="card-body">
+                <div id="busList"></div>
                 <!-- Bus information will be displayed here -->
               </div>
             </div>
@@ -403,11 +409,11 @@
           <p class="card-text">Departure Time: ${bus.departure_time}</p>
           <!-- Add other fields as needed -->
           <button
-                    type="submit"
-                    class="btn bg-primary text-white shadow-none mt-3"
-                  >
-                    Book Your Seat
-                  </button>
+            type="submit"
+            class="btn bg-primary text-white shadow-none mt-3"
+          >
+            Book Your Seat
+          </button>
         </div>
       </div>
     `;
@@ -423,6 +429,28 @@
         for (const busId in busesData) {
           const bus = busesData[busId];
           renderBus(bus);
+        }
+      });
+
+      // Get the input and search button elements
+      const routeInput = document.getElementById("routeInput");
+      const searchButton = document.getElementById("searchButton");
+
+      // Add event listener to the search button
+      searchButton.addEventListener("click", () => {
+        const enteredRouteNumber = routeInput.value.trim();
+        console.log(enteredRouteNumber, "!!");
+        const busesData = snapshot.val();
+
+        // Clear previous bus information
+        document.getElementById("busList").innerHTML = "";
+
+        // Filter and render buses based on the entered route number
+        for (const busId in busesData) {
+          const bus = busesData[busId];
+          if (bus.bus_number === enteredRouteNumber) {
+            renderBus(bus);
+          }
         }
       });
     </script>

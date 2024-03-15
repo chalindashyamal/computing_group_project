@@ -4,24 +4,11 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bus Tracking System-Contact Us</title>
     <link rel="stylesheet" href="contact.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-      crossorigin="anonymous"
-    ></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
-      integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
     />
     <link
       rel="stylesheet"
@@ -34,14 +21,14 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
-    <title>Bus Tracking System-Contact Us</title>
   </head>
-
   <body>
     <section id="header">
       <nav class="navbar navbar-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#"><img src="img/logo-white.png" /></a>
+          <a class="navbar-brand" href="#"
+            ><img src="img/logo-white.png" alt="Logo"
+          /></a>
           <button
             class="navbar-toggler"
             type="button"
@@ -89,7 +76,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-5 text-center">
-            <img src="img/Login_side.jpeg" class="img-fluid" />
+            <img src="img/Login_side.jpeg" class="img-fluid" alt="Login Side" />
           </div>
           <div class="col-md-6 text-justify">
             <!-- Login Form -->
@@ -118,9 +105,8 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
               </form>
             </div>
-
             <!-- Register Form -->
-            <div class="form-container" id="registerForm" style="display: none">
+            <div class="form-container" id="registerForm">
               <h3>Register</h3>
               <form>
                 <div class="form-group">
@@ -151,7 +137,20 @@
                     placeholder="Password"
                   />
                 </div>
-                <button id="btn_submit" type="submit" class="btn btn-primary">
+                <div class="form-group">
+                  <label for="idNumber">Id Number</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="idNumber"
+                    placeholder="Id Number"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  onclick="registerUser()"
+                >
                   Submit
                 </button>
               </form>
@@ -175,12 +174,15 @@
     </section>
 
     <!-- footer section -->
-
     <section id="footer">
       <div class="container">
         <div class="row">
           <div class="col-md-3">
-            <img src="img/logo-white.png" class="footer-logo" />
+            <img
+              src="img/logo-white.png"
+              class="footer-logo"
+              alt="Footer Logo"
+            />
             <p>
               "THANK YOU FOR USING OUR BUS TRACKING SERVICE. WE APPRECIATE YOUR
               PATRONAGE!"
@@ -198,14 +200,10 @@
           <div class="col-md-3">
             <h1>Contact Us</h1>
             <p><i class="fa-solid fa-phone"></i>+94 712514638</p>
+            <p><i class="fa-solid fa-envelope"></i> bus_travel@gmail.com</p>
             <p>
-              <i class="fa-solid fa-envelope"></i>
-              bus_travel@gmail.com
-            </p>
-            <p>
-              <i class="fa-solid fa-house"></i>123 Main Street<br />
-              Apartment 4B Anytown,<br />
-              USA 12345
+              <i class="fa-solid fa-house"></i>123 Main Street<br />Apartment 4B
+              Anytown,<br />USA 12345
             </p>
           </div>
           <div class="col-md-3">
@@ -217,50 +215,79 @@
           </div>
         </div>
         <hr />
-
         <p class="copyright">
           Copyright © [2001] [BUS travel]. All rights reserved.
         </p>
       </div>
     </section>
 
-    <!-- smooth scroll js -->
-    <!-- <script src="js/smooth-scroll.js"></script>
-        <script>
-            var scroll = new SmoothScroll('a[href*="#"]');
-        </script> -->
-
-    <script>
-      function toggleForm(formId) {
-        var forms = document.querySelectorAll(".form-container");
-        forms.forEach(function (form) {
-          if (form.id === formId) {
-            form.style.display = "block";
-          } else {
-            form.style.display = "none";
-          }
-        });
-      }
-    </script>
-
-    <!-- login -->
-
-    <script>
-      function toggleForm(formId) {
-        var forms = document.querySelectorAll(".form-container");
-        forms.forEach(function (form) {
-          if (form.id === formId) {
-            form.style.display = "block";
-          } else {
-            form.style.display = "none";
-          }
-        });
-      }
-    </script>
+    <!-- JavaScript -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
 
     <script src="js/wow.min.js"></script>
     <script>
       new WOW().init();
+    </script>
+    <script>
+      function toggleForm(formId) {
+        var forms = document.querySelectorAll(".form-container");
+        forms.forEach(function (form) {
+          if (form.id === formId) {
+            form.style.display = "block";
+          } else {
+            form.style.display = "none";
+          }
+        });
+      }
+
+      // Import Firebase modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        push,
+      } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCKYdEtZmhE_GLfR1LsIKf75e_YbQjDvSs",
+        authDomain: "computing-project-f65ec.firebaseapp.com",
+        databaseURL:
+          "https://computing-project-f65ec-default-rtdb.firebaseio.com",
+        projectId: "computing-project-f65ec",
+        storageBucket: "computing-project-f65ec.appspot.com",
+        messagingSenderId: "126022707574",
+        appId: "1:126022707574:web:795b761b783e0dfa62f257",
+        measurementId: "G-XG2N2HVR9M",
+      };
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+
+      const name = document.getElementById("registerName").value;
+      const email = document.getElementById("registerEmail").value;
+      const password = document.getElementById("registerPassword").value;
+      const idNumber = document.getElementById("idNumber").value;
+
+      database
+        .ref("student_details")
+        .push({
+          name: name,
+          email: email,
+          password: password,
+          idNumber: idNumber,
+        })
+        .then(() => {
+          alert("Registration successful!");
+          document.getElementById("registrationForm").reset();
+        })
+        .catch((error) => {
+          console.error("Error registering:", error);
+          alert("Registration failed. Please try again later.");
+        });
     </script>
   </body>
 </html>
