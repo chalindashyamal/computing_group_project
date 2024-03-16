@@ -303,68 +303,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-      function takeData() {
-        if (
-          $("#Username").val().length == 0 ||
-          $("#Numseats").val().length == 0
-        ) {
-          alert("Please Enter your Name and Number of Seats");
-        } else {
-          $(".inputForm *").prop("disabled", true);
-          $(".seatStructure *").prop("disabled", false);
-          $("#notification").html(
-            "<b style='margin-bottom:0px;background:yellow;'>Please Select your Seats NOW!</b>"
-          );
-          generateSeats();
-        }
-      }
-
-      function updateTextArea() {
-        var numSeats = parseInt($("#Numseats").val());
-        var selectedSeats = $("input:checked").length;
-        if (selectedSeats !== numSeats) {
-          $("#errorMessage").text(
-            "Please select exactly " + numSeats + " seats."
-          );
-        } else {
-          $("#errorMessage").text("");
-          var allNameVals = [];
-          var allNumberVals = [];
-          var allSeatsVals = [];
-
-          allNameVals.push($("#Username").val());
-          allNumberVals.push(numSeats);
-          $(".seats:checked").each(function () {
-            allSeatsVals.push($(this).val());
-          });
-
-          $("#nameDisplay").val(allNameVals);
-          $("#NumberDisplay").val(allNumberVals);
-          $("#seatsDisplay").val(allSeatsVals);
-        }
-      }
-
-      function generateSeats() {
-        var rows = ["A", "B", "C", "D", "E"];
-        var cols = 12;
-        var seatsBlock = $("#seatsBlock");
-        seatsBlock.empty();
-        for (var i = 0; i < rows.length; i++) {
-          var row = $("<tr>");
-          row.append($("<td>").text(rows[i]));
-          for (var j = 1; j <= cols; j++) {
-            var seat = $("<input>")
-              .attr("type", "checkbox")
-              .addClass("seats")
-              .val(rows[i] + j);
-            var seatCell = $("<td>").append(seat);
-            row.append(seatCell);
-          }
-          seatsBlock.append(row);
-        }
-      }
-    </script>
 
     <script type="module">
       // Import Firebase modules
@@ -373,6 +311,8 @@
         getDatabase,
         ref,
         onValue,
+        get,
+        set,
       } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
       // Firebase configuration (same as before)
@@ -448,12 +388,90 @@
             const bus = busesData[busId];
             if (bus.bus_number == enteredRouteNumber) {
               renderBus(bus);
+              window.busId = busId;
               return;
             }
           }
           busList.innerHTML = "<p>No bus data found....!</p>";
         });
       });
+
+      window.loadSeats = async function () {
+        //console.log(window.busId);
+        var rows = ["A", "B", "C", "D", "E"];
+        var cols = 12;
+        var seatsBlock = $("#seatsBlock");
+        seatsBlock.empty();
+        const seats = await get(
+          ref(database, `buses/${window.busId}/seats`)
+        ).then((x) => x.val() || {});
+        //console.log(seats.val());
+        for (var i = 0; i < rows.length; i++) {
+          var row = $("<tr>");
+          row.append($("<td>").text(rows[i]));
+          for (var j = 1; j <= cols; j++) {
+            const v = seats[rows[i] + j] ? true : false;
+            var seat = $("<input>")
+              .attr("type", "checkbox")
+              .addClass("seats")
+              .attr("checked", v)
+              .attr("disabled", v)
+              .val(rows[i] + j);
+            var seatCell = $("<td>").append(seat);
+            row.append(seatCell);
+          }
+          seatsBlock.append(row);
+        }
+      };
+      window.updateTextArea = async function () {
+        var numSeats = parseInt($("#Numseats").val());
+        var selectedSeats = $(".seats:checked:not(:disabled)").length;
+        if (selectedSeats !== numSeats) {
+          $("#errorMessage").text(
+            "Please select exactly " + numSeats + " seats."
+          );
+        } else {
+          $("#errorMessage").text("");
+          var allNameVals = [];
+          var allNumberVals = [];
+          var allSeatsVals = [];
+
+          allNameVals.push($("#Username").val());
+          allNumberVals.push(numSeats);
+          $(".seats:checked:not(:disabled)").each(function () {
+            allSeatsVals.push($(this).val());
+          });
+
+          allSeatsVals.forEach(async (x) => {
+            await set(
+              ref(database, `buses/${window.busId}/seats/${x}`),
+              allNameVals[0]
+            );
+          });
+
+          $("#nameDisplay").val(allNameVals);
+          $("#NumberDisplay").val(allNumberVals);
+          $("#seatsDisplay").val(allSeatsVals);
+        }
+      };
+    </script>
+
+    <script>
+      function takeData() {
+        if (
+          $("#Username").val().length == 0 ||
+          $("#Numseats").val().length == 0
+        ) {
+          alert("Please Enter your Name and Number of Seats");
+        } else {
+          $(".inputForm *").prop("disabled", true);
+          $(".seatStructure *").prop("disabled", false);
+          $("#notification").html(
+            "<b style='margin-bottom:0px;background:yellow;'>Please Select your Seats NOW!</b>"
+          );
+          loadSeats();
+        }
+      }
     </script>
   </body>
 </html>
