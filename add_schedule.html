@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bus Tracking System-Admin Panel</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- SweetAlert2 for better alert dialogs -->
+
+    <title>Landlord Panel</title>
+    <style>
+      #dashboard-menu {
+        position: fixed;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body class="bg-light">
+    <div
+      class="container-fluid bg-dark text-light p-3 d-flex align-items-center justify-content-between sticky-top"
+    >
+      <h3 class="mb-0 h-font">Bus Tracking System-Admin Dashboard</h3>
+      <a href="admin_login.html" class="btn btn-light btn-sm">LOG OUT</a>
+    </div>
+
+    <div
+      class="col-lg-2 bg-dark border-top border-3 border-secondary"
+      id="dashboard-menu"
+    >
+      <nav class="navbar navbar-expand-lg coustom-bg">
+        <div class="container-fluid flex-lg-column align-items-stretch">
+          <h5 class="mt-2 text-light">Admin panel</h5>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#admindropdown"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div
+            class="collapse navbar-collapse flex-column align-items-stretch mt-2"
+            id="admindropdown"
+          >
+            <ul class="nav nav-pills flex-column">
+              <li class="nav-item">
+                <a class="nav-link text-white" href="admin_page.html"
+                  >Bus Registration</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="special.html"
+                  >Special Messages</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="add_schedule.html"
+                  >Add Schedule</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="container-fluid" id="main-content">
+      <div class="row">
+        <div class="col-lg-10 ms-auto p-4 overflow-hidden">
+          <!-- Admin Panel -->
+          <div class="container">
+            <h2>Add Bus Schedule</h2>
+            <form id="scheduleForm">
+              <div class="mb-3">
+                <label for="busRoute" class="form-label">Bus Route</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="busRoute"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date" required />
+              </div>
+              <div class="mb-3">
+                <label for="departureTime" class="form-label"
+                  >Departure Time</label
+                >
+                <input
+                  type="time"
+                  class="form-control"
+                  id="departureTime"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Add Schedule
+              </button>
+            </form>
+          </div>
+
+          <!-- User Calendar -->
+          <div class="container mt-5">
+            <h2>Bus Schedule</h2>
+            <div id="calendar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- schedule script -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const calendarEl = document.getElementById("calendar");
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: "dayGridMonth",
+          eventContent: function (arg) {
+            const deleteButtonHtml = `<button class="delete-event-button btn btn-danger" data-event-id="${arg.event.id}">Delete</button>`;
+            return {
+              html: `<div>${arg.timeText} - ${arg.event.title} ${deleteButtonHtml}</div>`,
+            };
+          },
+          eventClick: function (info) {
+            // Check if the clicked element is the delete button
+            if (info.jsEvent.target.classList.contains("delete-event-button")) {
+              const eventId = info.jsEvent.target.dataset.eventId;
+              deleteEvent(eventId);
+            }
+          },
+          events: function (fetchInfo, successCallback, failureCallback) {
+            // Fetch schedule data from Firebase
+            fetch(
+              "https://computing-project-f65ec-default-rtdb.firebaseio.com/schedules.json"
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                const events = [];
+                // Iterate over each schedule entry and format it for FullCalendar
+                for (const key in data) {
+                  const schedule = data[key];
+                  const event = {
+                    id: key, // Unique ID for each event
+                    title: schedule.busRoute,
+                    start: schedule.date + "T" + schedule.departureTime,
+                    allDay: false, // Adjust based on your requirements
+                  };
+                  events.push(event);
+                }
+                successCallback(events); // Provide the events to FullCalendar
+              })
+              .catch((error) => {
+                console.error("Error fetching schedule data:", error);
+                failureCallback(error);
+              });
+          },
+        });
+        calendar.render();
+
+        // Function to delete an event
+        function deleteEvent(eventId) {
+          // Use SweetAlert2 for confirmation dialog
+          Swal.fire({
+            title: "Are you sure?",
+            text: "This action cannot be undone!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // If confirmed, delete the event from Firebase
+              fetch(
+                `https://computing-project-f65ec-default-rtdb.firebaseio.com/schedules/${eventId}.json`,
+                {
+                  method: "DELETE",
+                }
+              )
+                .then((response) => {
+                  if (response.ok) {
+                    calendar.getEventById(eventId).remove(); // Remove the event from the calendar
+                    Swal.fire(
+                      "Deleted!",
+                      "The schedule has been deleted.",
+                      "success"
+                    );
+                  } else {
+                    throw new Error("Failed to delete schedule");
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error deleting schedule:", error);
+                  Swal.fire(
+                    "Error!",
+                    "Failed to delete the schedule.",
+                    "error"
+                  );
+                });
+            }
+          });
+        }
+      });
+    </script>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        push,
+        set,
+      } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCKYdEtZmhE_GLfR1LsIKf75e_YbQjDvSs",
+        authDomain: "computing-project-f65ec.firebaseapp.com",
+        databaseURL:
+          "https://computing-project-f65ec-default-rtdb.firebaseio.com",
+        projectId: "computing-project-f65ec",
+        storageBucket: "computing-project-f65ec.appspot.com",
+        messagingSenderId: "126022707574",
+        appId: "1:126022707574:web:795b761b783e0dfa62f257",
+        measurementId: "G-XG2N2HVR9M",
+      };
+
+      const firebaseApp = initializeApp(firebaseConfig);
+      const database = getDatabase(firebaseApp);
+
+      const scheduleForm = document.getElementById("scheduleForm");
+
+      scheduleForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Get form values
+        const busRoute = document.getElementById("busRoute").value;
+        const date = document.getElementById("date").value;
+        const departureTime = document.getElementById("departureTime").value;
+
+        // Reference to "schedules" table in the database
+        const schedulesRef = ref(database, "schedules");
+
+        // Push the new schedule data to the database
+        push(schedulesRef, {
+          busRoute: busRoute,
+          date: date,
+          departureTime: departureTime,
+        })
+          .then(() => {
+            alert("Schedule added successfully");
+            // Clear the form after successful submission
+            scheduleForm.reset();
+          })
+          .catch((error) => {
+            alert("Error adding schedule: " + error.message);
+            console.error("Error adding schedule: ", error);
+          });
+      });
+    </script>
+  </body>
+</html>
