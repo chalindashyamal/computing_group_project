@@ -2,29 +2,135 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Bus Tracking System-Contact Us</title>
+    <link rel="stylesheet" href="calender.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+      integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
   </head>
   <body>
-    <!-- Admin Panel -->
+    <section id="header">
+      <nav class="navbar navbar-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"
+            ><img src="img/logo-white.png" alt="Logo"
+          /></a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <i class="fa fa-bars"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">HOME</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="book.html">BOOK NOW</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="calender.html">CALENDER</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="pick_bus.html">PICK YOUR BUS</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="contact.html">Student Bus Feedback</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </section>
+    <!-- welcome text -->
+    <section id="welcome">
+      <div class="container">
+        <div class="welcome text-center wow slideInLeft">
+          <h1>SIGN IN TO TRACK YOUR BUS OR REGISTER FOR UPDATES.</h1>
+        </div>
+      </div>
+    </section>
+
+    <!-- message cards -->
     <div class="container mt-5">
-      <h2>Add Bus Schedule</h2>
-      <form id="scheduleForm">
-        <div class="mb-3">
-          <label for="busRoute" class="form-label">Bus Route</label>
-          <input type="text" class="form-control" id="busRoute" required />
+      <div class="row">
+        <h2>Special Messages</h2>
+        <div id="messagesContainer">
+          <!-- Messages will be dynamically added here -->
         </div>
-        <div class="mb-3">
-          <label for="date" class="form-label">Date</label>
-          <input type="date" class="form-control" id="date" required />
-        </div>
-        <div class="mb-3">
-          <label for="departureTime" class="form-label">Departure Time</label>
-          <input type="time" class="form-control" id="departureTime" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Add Schedule</button>
-      </form>
+      </div>
     </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCKYdEtZmhE_GLfR1LsIKf75e_YbQjDvSs",
+        authDomain: "computing-project-f65ec.firebaseapp.com",
+        databaseURL:
+          "https://computing-project-f65ec-default-rtdb.firebaseio.com",
+        projectId: "computing-project-f65ec",
+        storageBucket: "computing-project-f65ec.appspot.com",
+        messagingSenderId: "126022707574",
+        appId: "1:126022707574:web:795b761b783e0dfa62f257",
+        measurementId: "G-XG2N2HVR9M",
+      };
+
+      const firebaseApp = initializeApp(firebaseConfig);
+      const database = getDatabase(firebaseApp);
+
+      const messagesContainer = document.getElementById("messagesContainer");
+
+      // Function to fetch messages from Firebase and display them
+      function displayMessages() {
+        const messagesRef = ref(database, "messages");
+        onValue(messagesRef, (snapshot) => {
+          messagesContainer.innerHTML = ""; // Clear previous messages
+          snapshot.forEach((childSnapshot) => {
+            const message = childSnapshot.val();
+            const cardHtml = `
+              <div class="card col-sm-6 mb-3 mb-sm-0 mt-3 coustom_Size">
+                <div class="card-body">
+                  <h5 class="card-title">${message.subject}</h5>
+                  <p class="card-text">${message.message}</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+              </div>
+            `;
+            messagesContainer.innerHTML += cardHtml;
+          });
+        });
+      }
+
+      // Call the function to initially display messages
+      displayMessages();
+    </script>
 
     <!-- User Calendar -->
     <div class="container mt-5">
@@ -95,60 +201,80 @@
     />
 
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-      import {
-        getDatabase,
-        ref,
-        push,
-        set,
-      } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-      // Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyCKYdEtZmhE_GLfR1LsIKf75e_YbQjDvSs",
-        authDomain: "computing-project-f65ec.firebaseapp.com",
-        databaseURL:
-          "https://computing-project-f65ec-default-rtdb.firebaseio.com",
-        projectId: "computing-project-f65ec",
-        storageBucket: "computing-project-f65ec.appspot.com",
-        messagingSenderId: "126022707574",
-        appId: "1:126022707574:web:795b761b783e0dfa62f257",
-        measurementId: "G-XG2N2HVR9M",
-      };
+    <!-- footer section -->
+    <section id="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+            <img
+              src="img/logo-white.png"
+              class="footer-logo"
+              alt="Footer Logo"
+            />
+            <p>
+              "THANK YOU FOR USING OUR BUS TRACKING SERVICE. WE APPRECIATE YOUR
+              PATRONAGE!"
+            </p>
+          </div>
+          <div class="col-md-3">
+            <h1>Features</h1>
+            <p>State-of-the-art equipment</p>
+            <p>Expert trainers</p>
+            <p>Group bus travel classes</p>
+            <p>24/7 access</p>
+            <p>Clean and comfortable environment</p>
+          </div>
 
-      const firebaseApp = initializeApp(firebaseConfig);
-      const database = getDatabase(firebaseApp);
+          <div class="col-md-3">
+            <h1>Contact Us</h1>
+            <p><i class="fa-solid fa-phone"></i>+94 712514638</p>
+            <p><i class="fa-solid fa-envelope"></i> bus_travel@gmail.com</p>
+            <p>
+              <i class="fa-solid fa-house"></i>123 Main Street<br />Apartment 4B
+              Anytown,<br />USA 12345
+            </p>
+          </div>
+          <div class="col-md-3">
+            <h1>Follow Us On</h1>
+            <p><i class="fa-brands fa-facebook"></i> facebook</p>
+            <p><i class="fa-brands fa-instagram"></i> instagram</p>
+            <p><i class="fa-brands fa-youtube"></i> youtube</p>
+            <p><i class="fa-brands fa-linkedin"></i> linkedin</p>
+          </div>
+        </div>
+        <hr />
+        <p class="copyright">
+          Copyright © [2001] [BUS travel]. All rights reserved.
+        </p>
+      </div>
+    </section>
 
-      const scheduleForm = document.getElementById("scheduleForm");
+    <!-- JavaScript -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
 
-      scheduleForm.addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent default form submission
+    <script src="js/wow.min.js"></script>
+    <script>
+      new WOW().init();
+    </script>
 
-        // Get form values
-        const busRoute = document.getElementById("busRoute").value;
-        const date = document.getElementById("date").value;
-        const departureTime = document.getElementById("departureTime").value;
+    <script>
+      function toggleForm(formId) {
+        var loginForm = document.getElementById("loginForm");
+        var registerForm = document.getElementById("registerForm");
 
-        // Reference to "schedules" table in the database
-        const schedulesRef = ref(database, "schedules");
-
-        // Push the new schedule data to the database
-        push(schedulesRef, {
-          busRoute: busRoute,
-          date: date,
-          departureTime: departureTime,
-        })
-          .then(() => {
-            alert("Schedule added successfully");
-            // Clear the form after successful submission
-            scheduleForm.reset();
-          })
-          .catch((error) => {
-            alert("Error adding schedule: " + error.message);
-            console.error("Error adding schedule: ", error);
-          });
-      });
+        if (formId === "loginForm") {
+          loginForm.style.display = "block";
+          registerForm.style.display = "none";
+        } else if (formId === "registerForm") {
+          loginForm.style.display = "none";
+          registerForm.style.display = "block";
+        }
+      }
     </script>
   </body>
 </html>

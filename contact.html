@@ -49,13 +49,13 @@
                 <a class="nav-link" href="book.html">BOOK NOW</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">CALENDER</a>
+                <a class="nav-link" href="calender.html">CALENDER</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="pick_bus.html">PICK YOUR BUS</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="contact.html">LOGIN</a>
+                <a class="nav-link" href="contact.html">Student Bus Feedback</a>
               </li>
             </ul>
           </div>
@@ -66,12 +66,12 @@
     <section id="welcome">
       <div class="container">
         <div class="welcome text-center wow slideInLeft">
-          <h1>SIGN IN TO TRACK YOUR BUS OR REGISTER FOR UPDATES.</h1>
+          <h1>I WANT TO GIVE FEEDBACK ABOUT ITS CLEANLINESS AND PUNCTUALITY</h1>
         </div>
       </div>
     </section>
 
-    <!-- login/register  -->
+    <!-- feedback  -->
     <section id="about">
       <div class="container">
         <div class="row">
@@ -79,95 +79,51 @@
             <img src="img/Login_side.jpeg" class="img-fluid" alt="Login Side" />
           </div>
           <div class="col-md-6 text-justify">
-            <!-- Login Form -->
-            <div class="form-container" id="loginForm">
-              <h3>Login</h3>
+            <div class="container mt-5">
+              <h1 class="text-center mb-4">Student Bus Feedback</h1>
               <form>
                 <div class="form-group">
-                  <label for="loginEmail">Email address</label>
-                  <input
-                    type="email"
+                  <label for="feedback">Feedback:</label>
+                  <textarea
                     class="form-control"
-                    id="loginEmail"
-                    aria-describedby="emailHelp"
-                    placeholder="Enter email"
-                  />
+                    id="feedback"
+                    rows="3"
+                    required
+                  ></textarea>
                 </div>
-                <div class="form-group">
-                  <label for="loginPassword">Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="loginPassword"
-                    placeholder="Password"
-                  />
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
-            </div>
-            <!-- Register Form -->
-            <div class="form-container" id="registerForm" style="display: none">
-              <h3>Register</h3>
-              <form>
-                <div class="form-group">
-                  <label for="registerName">Full Name</label>
+                <div class="mb-3">
+                  <label for="routenumber" class="form-group"
+                    >Route Number</label
+                  >
                   <input
                     type="text"
                     class="form-control"
-                    id="registerName"
-                    placeholder="Enter your full name"
+                    id="routenumber"
+                    required
                   />
                 </div>
                 <div class="form-group">
-                  <label for="registerEmail">Email address</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="registerEmail"
-                    aria-describedby="emailHelp"
-                    placeholder="Enter email"
-                  />
+                  <label for="rating">Rate the Bus Driver:</label>
+                  <div class="rating">
+                    <span>&#9733;</span><span>&#9733;</span><span>&#9733;</span
+                    ><span>&#9733;</span><span>&#9733;</span>
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label for="registerPassword">Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="registerPassword"
-                    placeholder="Password"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="idNumber">Id Number</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="idNumber"
-                    placeholder="Id Number"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  onclick="registerUser()"
-                >
-                  Submit
+                <button type="submit" class="btn btn-primary">
+                  Submit Feedback
                 </button>
               </form>
             </div>
-
-            <!-- Buttons to toggle forms -->
-            <div>
-              <button onclick="toggleForm('loginForm')" class="btn btn-primary">
-                Login
-              </button>
-              <button
-                onclick="toggleForm('registerForm')"
-                class="btn btn-primary"
-              >
-                Register
-              </button>
-            </div>
+          </div>
+        </div>
+        <div class="card w-75 mb-3">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">
+              With supporting text below as a natural lead-in to additional
+              content.
+            </p>
+            <a href="#" class="btn btn-primary">Button</a>
           </div>
         </div>
       </div>
@@ -292,6 +248,51 @@
           console.error("Error registering:", error);
           alert("Registration failed. Please try again later.");
         });
+    </script>
+
+    <!-- feedback -->
+
+    <script>
+      const ratingStars = document.querySelectorAll(".rating > span");
+      let rating = 0;
+
+      ratingStars.forEach((star, index) => {
+        star.addEventListener("click", () => {
+          rating = index + 1;
+          updateRating();
+        });
+
+        star.addEventListener("mouseover", () => {
+          updateRating(index + 1);
+        });
+
+        star.addEventListener("mouseout", () => {
+          updateRating();
+        });
+      });
+
+      function updateRating(newRating = rating) {
+        ratingStars.forEach((star, index) => {
+          if (index < newRating) {
+            star.style.color = "gold";
+          } else {
+            star.style.color = "#ccc";
+          }
+        });
+      }
+
+      const form = document.querySelector("form");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const feedback = document.querySelector("#feedback").value;
+        console.log(`Feedback: ${feedback}`);
+        console.log(`Rating: ${rating}`);
+        // Here, you can send the feedback and rating to a server or process them further
+        alert("Thank you for your feedback!");
+        form.reset();
+        rating = 0;
+        updateRating();
+      });
     </script>
   </body>
 </html>

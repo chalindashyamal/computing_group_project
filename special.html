@@ -69,6 +69,11 @@
                 >
               </li>
               <li class="nav-item">
+                <a class="nav-link text-white" href="add_student.html"
+                  >Student Registration</a
+                >
+              </li>
+              <li class="nav-item">
                 <a class="nav-link text-white" href="special.html"
                   >Special Messages</a
                 >
@@ -88,7 +93,7 @@
       <div class="row">
         <div class="col-lg-10 ms-auto p-4 overflow-hidden">
           <h3 class="mb-4">Special Messages</h3>
-          <form class="custom-form rounded" action="" method="post">
+          <form class="custom-form rounded" id="messageForm">
             <div class="modal-header">
               <h1 class="modal-title fs-5 d-flex align-items-center">
                 <i class="bi bi-file-earmark-plus-fill"></i>New Message
@@ -99,11 +104,22 @@
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-md-12 ps-0 mt-3">
+                    <label class="form-label">Subject</label>
+                    <input
+                      type="text"
+                      class="form-control shadow-none"
+                      name="subject"
+                      id="subject"
+                    />
+                  </div>
+
+                  <div class="col-md-12 ps-0 mt-3">
                     <label class="form-label">Message</label>
                     <textarea
                       class="form-control shadow-none"
                       rows="5"
                       name="message"
+                      id="message"
                     ></textarea>
                   </div>
                 </div>
@@ -119,8 +135,118 @@
               </div>
             </div>
           </form>
+          <!-- message cards -->
+          <div class="container mt-5">
+            <div class="row">
+              <h2>All Messages</h2>
+              <div id="messagesContainer">
+                <!-- Messages will be dynamically added here -->
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        push,
+        set,
+        onValue,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCKYdEtZmhE_GLfR1LsIKf75e_YbQjDvSs",
+        authDomain: "computing-project-f65ec.firebaseapp.com",
+        databaseURL:
+          "https://computing-project-f65ec-default-rtdb.firebaseio.com",
+        projectId: "computing-project-f65ec",
+        storageBucket: "computing-project-f65ec.appspot.com",
+        messagingSenderId: "126022707574",
+        appId: "1:126022707574:web:795b761b783e0dfa62f257",
+        measurementId: "G-XG2N2HVR9M",
+      };
+
+      const firebaseApp = initializeApp(firebaseConfig);
+      const database = getDatabase(firebaseApp);
+
+      const messageForm = document.getElementById("messageForm");
+
+      const messagesContainer = document.getElementById("messagesContainer");
+
+      // Function to fetch messages from Firebase and display them
+      function displayMessages() {
+        const messagesRef = ref(database, "messages");
+        onValue(messagesRef, (snapshot) => {
+          messagesContainer.innerHTML = ""; // Clear previous messages
+          snapshot.forEach((childSnapshot) => {
+            const message = childSnapshot.val();
+            const cardHtml = `
+        <div class="card col-sm-6 mb-3 mb-sm-0 mt-3 coustom_Size">
+          <div class="card-body">
+            <h5 class="card-title">${message.subject}</h5>
+            <p class="card-text">${message.message}</p>
+            <button class="btn btn-danger delete-message" data-message-id="${childSnapshot.key}">Delete</button>
+           
+          </div>
+        </div>
+      `;
+            messagesContainer.innerHTML += cardHtml;
+          });
+        });
+      }
+
+      // Call the function to initially display messages
+      displayMessages();
+
+      // Event listener for delete buttons
+      messagesContainer.addEventListener("click", (event) => {
+        if (event.target.classList.contains("delete-message")) {
+          const messageId = event.target.dataset.messageId;
+          // Confirm deletion with the user
+          if (confirm("Are you sure you want to delete this message?")) {
+            // Remove the message from the database
+            remove(ref(database, `messages/${messageId}`))
+              .then(() => {
+                console.log("Message deleted successfully");
+              })
+              .catch((error) => {
+                console.error("Error deleting message:", error);
+              });
+          }
+        }
+      });
+
+      messageForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Get form values
+        const subject = document.getElementById("subject").value;
+        const message = document.getElementById("message").value;
+
+        // Reference to "messages" table in the database
+        const messagesRef = ref(database, "messages");
+
+        // Push the new message data to the database
+        push(messagesRef, {
+          subject: subject,
+          message: message,
+        })
+          .then(() => {
+            // Clear the form after successful submission
+            messageForm.reset();
+            alert("Message sent successfully");
+          })
+          .catch((error) => {
+            console.error("Error sending message: ", error);
+            alert("Error sending message");
+          });
+      });
+    </script>
   </body>
 </html>
