@@ -215,55 +215,64 @@
         <div class="row">
           <div class="col-md-6 text-justify">
             <div class="container mt-5">
-              <h1 class="text-center mb-4">Student Bus Feedback</h1>
-              <form>
-                <div class="form-group">
-                  <label for="feedback">Feedback:</label>
-                  <textarea
-                    class="form-control"
-                    id="feedback"
-                    rows="3"
-                    required
-                  ></textarea>
-                </div>
-                <div class="mb-3">
-                  <label for="routenumber" class="form-group"
-                    >Route Number</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="routenumber"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="rating">Rate the Bus Driver:</label>
-                  <div class="rating">
-                    <span>&#9733;</span><span>&#9733;</span><span>&#9733;</span
-                    ><span>&#9733;</span><span>&#9733;</span>
+              <div class="row">
+                <h1 class="mb-4">Student Bus Feedback</h1>
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label for="rating">Rate the Bus Driver:</label>
+                    <div class="rating">
+                      <span>★</span>
+                      <span>★</span>
+                      <span>★</span>
+                      <span>★</span>
+                      <span>★</span>
+                    </div>
                   </div>
+
+                  <form id="feedbackForm" class="mt-4">
+                    <div class="mb-3">
+                      <label for="studentname" class="form-label"
+                        >Student Name
+                      </label>
+                      <input
+                        type="text"
+                        id="studentname"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="routenumber" class="form-label"
+                        >Route Number</label
+                      >
+                      <input
+                        type="text"
+                        id="routenumber"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="feedback" class="form-label">Feedback</label>
+                      <textarea
+                        id="feedback"
+                        class="form-control"
+                        required
+                      ></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                      Submit Feedback
+                    </button>
+                  </form>
                 </div>
-                <button type="submit" class="btn btn-primary">
-                  Submit Feedback
-                </button>
-              </form>
+              </div>
             </div>
           </div>
           <div class="col-md-5 text-center">
             <img src="img/feedback.jpeg" class="img-fluid" />
           </div>
         </div>
-        <div class="card w-75 mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">
-              With supporting text below as a natural lead-in to additional
-              content.
-            </p>
-            <a href="#" class="btn btn-primary">Button</a>
-          </div>
-        </div>
+        <div id="reviewsContainer" class="reviews-container"></div>
       </div>
     </section>
 
@@ -324,7 +333,94 @@
 
     <!-- feedback -->
 
-    <script>
+    <script type="module">
+      // app.js
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        push,
+        set,
+        onChildAdded,
+      } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCKYdEtZmhE_GLfR1LsIKf75e_YbQjDvSs",
+        authDomain: "computing-project-f65ec.firebaseapp.com",
+        databaseURL:
+          "https://computing-project-f65ec-default-rtdb.firebaseio.com",
+        projectId: "computing-project-f65ec",
+        storageBucket: "computing-project-f65ec.appspot.com",
+        messagingSenderId: "126022707574",
+        appId: "1:126022707574:web:795b761b783e0dfa62f257",
+        measurementId: "G-XG2N2HVR9M",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+
+      // Reference to the 'feedbacks' node
+      const feedbacksRef = ref(database, "feedbacks");
+
+      // Function to create a card for each review
+      function createReviewCard(studentName, routeNumber, feedback, rating) {
+        const container = document.getElementById("reviewsContainer");
+
+        // Create card elements
+        const card = document.createElement("div");
+        card.classList.add("card", "w-75", "mb-3");
+
+        const cardBody = document.createElement("div");
+        cardBody.classList.add("card-body");
+
+        const title = document.createElement("h5");
+        title.classList.add("card-title");
+        title.textContent = studentName;
+
+        const route = document.createElement("h6");
+        route.classList.add("card-title");
+        route.textContent = `Route Number: ${routeNumber}`;
+
+        const feedbackText = document.createElement("p");
+        feedbackText.classList.add("card-text");
+        feedbackText.textContent = feedback;
+
+        const ratingDiv = document.createElement("div");
+        ratingDiv.classList.add("rating");
+
+        // Create star elements based on rating and color them accordingly
+        for (let i = 0; i < 5; i++) {
+          const star = document.createElement("span");
+          star.textContent = "★";
+          if (i < rating) {
+            star.style.color = "gold"; // Color the star if its index is less than the rating
+          } else {
+            star.style.color = "#ccc"; // Gray out the star if its index is greater than or equal to the rating
+          }
+          ratingDiv.appendChild(star);
+        }
+
+        // Append elements to card
+        cardBody.appendChild(title);
+        cardBody.appendChild(route);
+        cardBody.appendChild(feedbackText);
+        cardBody.appendChild(ratingDiv);
+        card.appendChild(cardBody);
+        container.appendChild(card);
+      }
+
+      // Listen for new reviews added to the database
+      onChildAdded(feedbacksRef, (snapshot) => {
+        const review = snapshot.val();
+        createReviewCard(
+          review.studentName,
+          review.routeNumber,
+          review.feedback,
+          review.rating
+        );
+      });
+
       const ratingStars = document.querySelectorAll(".rating > span");
       let rating = 0;
 
@@ -353,18 +449,39 @@
         });
       }
 
-      const form = document.querySelector("form");
+      const form = document.querySelector("#feedbackForm");
       form.addEventListener("submit", (event) => {
         event.preventDefault();
         const feedback = document.querySelector("#feedback").value;
-        console.log(`Feedback: ${feedback}`);
-        console.log(`Rating: ${rating}`);
-        // Here, you can send the feedback and rating to a server or process them further
-        alert("Thank you for your feedback!");
-        form.reset();
-        rating = 0;
-        updateRating();
+        const studentName = document.querySelector("#studentname").value;
+        const routeNumber = document.querySelector("#routenumber").value;
+
+        const feedbacksRef = ref(database, "feedbacks"); // Reference to "feedbacks" node
+        const newFeedbackRef = push(feedbacksRef); // Push generates a new child location
+        set(newFeedbackRef, {
+          studentName: studentName,
+          routeNumber: routeNumber,
+          feedback: feedback,
+          rating: rating,
+        })
+          .then(() => {
+            alert("Thank you for your feedback!");
+            form.reset();
+            rating = 0;
+            updateRating();
+          })
+          .catch((error) => {
+            console.error(
+              "Error writing feedback to Firebase Database: ",
+              error
+            );
+            alert(
+              "Error occurred while submitting feedback. Please try again later."
+            );
+          });
       });
     </script>
+
+    <!-- <script type="module" src="app.js"></script> -->
   </body>
 </html>

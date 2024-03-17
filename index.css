@@ -242,6 +242,12 @@ nav .fa-bars {
     color: gold;
   }
 
+  #reviewsContainer{
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+  }
+
 /* <!-- footer section --> */
 #footer {
     /* margin-top: 80px; */
@@ -295,4 +301,9 @@ nav .fa-bars {
     .feature-box .feature-right {
         height: 290px;
     }
+    #reviewsContainer {
+        flex-direction: column; /* Stack items vertically */
+        gap: 10px; /* Reduce the gap between items */
+      }
 }
+
