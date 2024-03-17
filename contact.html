@@ -21,6 +21,17 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
+    <style>
+      .custom-bg {
+        background-color: #2ec1ac;
+      }
+
+      .custom-bg:hover {
+        background-color: #279e8c;
+      }
+    </style>
   </head>
   <body>
     <section id="header">
@@ -55,7 +66,7 @@
                 <a class="nav-link" href="pick_bus.html">PICK YOUR BUS</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="contact.html">Student Bus Feedback</a>
+                <a class="nav-link" href="contact.html">Contact Us</a>
               </li>
             </ul>
           </div>
@@ -66,7 +77,7 @@
     <section id="welcome">
       <div class="container">
         <div class="welcome text-center wow slideInLeft">
-          <h1>I WANT TO GIVE FEEDBACK ABOUT ITS CLEANLINESS AND PUNCTUALITY</h1>
+          <h1>NEED ASSISTANCE? CONTACT OUR WEB ADMIN VIA EMAIL!</h1>
         </div>
       </div>
     </section>
@@ -78,52 +89,81 @@
           <div class="col-md-5 text-center">
             <img src="img/Login_side.jpeg" class="img-fluid" alt="Login Side" />
           </div>
-          <div class="col-md-6 text-justify">
-            <div class="container mt-5">
-              <h1 class="text-center mb-4">Student Bus Feedback</h1>
-              <form>
-                <div class="form-group">
-                  <label for="feedback">Feedback:</label>
-                  <textarea
-                    class="form-control"
-                    id="feedback"
-                    rows="3"
-                    required
-                  ></textarea>
-                </div>
-                <div class="mb-3">
-                  <label for="routenumber" class="form-group"
-                    >Route Number</label
+          <!-- message box -->
+
+          <div class="col-lg-6 col-md-6 md-6 px-4 py-4 mb-4">
+            <div class="bg-white rounded shadow p-4">
+              <form id="emailForm">
+                <h5>Reply To Web-Admin</h5>
+
+                <div class="mt-3">
+                  <label class="form-label" style="font-weight: 500"
+                    >Student Name</label
                   >
                   <input
-                    type="text"
-                    class="form-control"
-                    id="routenumber"
+                    id="sendername"
                     required
+                    type="text"
+                    class="form-control shadow-none"
                   />
                 </div>
-                <div class="form-group">
-                  <label for="rating">Rate the Bus Driver:</label>
-                  <div class="rating">
-                    <span>&#9733;</span><span>&#9733;</span><span>&#9733;</span
-                    ><span>&#9733;</span><span>&#9733;</span>
-                  </div>
+
+                <div class="mt-3">
+                  <label class="form-label" style="font-weight: 500"
+                    >Student Email</label
+                  >
+                  <input
+                    id="replyto"
+                    required
+                    type="email"
+                    class="form-control shadow-none"
+                  />
                 </div>
-                <button type="submit" class="btn btn-primary">
-                  Submit Feedback
+                <div class="mt-3">
+                  <label class="form-label" style="font-weight: 500"
+                    >Admin Email</label
+                  >
+                  <input
+                    id="to"
+                    required
+                    type="email"
+                    class="form-control shadow-none"
+                    value="rmc.shyamal@gmail.com"
+                    disabled
+                  />
+                </div>
+
+                <div class="mt-3">
+                  <label class="form-label" style="font-weight: 500"
+                    >Subject</label
+                  >
+                  <input
+                    id="subject"
+                    required
+                    type="text"
+                    class="form-control shadow-none"
+                  />
+                </div>
+                <div class="mt-3">
+                  <label class="form-label" style="font-weight: 500"
+                    >Message</label
+                  >
+                  <textarea
+                    id="message"
+                    required
+                    class="form-control shadow-none"
+                    rows="5"
+                  ></textarea>
+                </div>
+                <button
+                  type="button"
+                  onclick="sendMail();"
+                  class="btn text-white custom-bg mt-3"
+                >
+                  Submit
                 </button>
               </form>
             </div>
-          </div>
-        </div>
-        <div class="card w-75 mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">
-              With supporting text below as a natural lead-in to additional
-              content.
-            </p>
-            <a href="#" class="btn btn-primary">Button</a>
           </div>
         </div>
       </div>
@@ -189,110 +229,36 @@
       new WOW().init();
     </script>
 
-    <script>
-      function toggleForm(formId) {
-        var loginForm = document.getElementById("loginForm");
-        var registerForm = document.getElementById("registerForm");
-
-        if (formId === "loginForm") {
-          loginForm.style.display = "block";
-          registerForm.style.display = "none";
-        } else if (formId === "registerForm") {
-          loginForm.style.display = "none";
-          registerForm.style.display = "block";
-        }
-      }
-    </script>
-    <script>
-      // Import Firebase modules
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-      import {
-        getDatabase,
-        ref,
-        push,
-      } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-      // Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyCKYdEtZmhE_GLfR1LsIKf75e_YbQjDvSs",
-        authDomain: "computing-project-f65ec.firebaseapp.com",
-        databaseURL:
-          "https://computing-project-f65ec-default-rtdb.firebaseio.com",
-        projectId: "computing-project-f65ec",
-        storageBucket: "computing-project-f65ec.appspot.com",
-        messagingSenderId: "126022707574",
-        appId: "1:126022707574:web:795b761b783e0dfa62f257",
-        measurementId: "G-XG2N2HVR9M",
-      };
-      firebase.initializeApp(firebaseConfig);
-      const database = firebase.database();
-
-      const name = document.getElementById("registerName").value;
-      const email = document.getElementById("registerEmail").value;
-      const password = document.getElementById("registerPassword").value;
-      const idNumber = document.getElementById("idNumber").value;
-
-      database
-        .ref("student_details")
-        .push({
-          name: name,
-          email: email,
-          password: password,
-          idNumber: idNumber,
-        })
-        .then(() => {
-          alert("Registration successful!");
-          document.getElementById("registrationForm").reset();
-        })
-        .catch((error) => {
-          console.error("Error registering:", error);
-          alert("Registration failed. Please try again later.");
-        });
-    </script>
-
-    <!-- feedback -->
+    <!-- send email -->
 
     <script>
-      const ratingStars = document.querySelectorAll(".rating > span");
-      let rating = 0;
+      function sendMail() {
+        emailjs.init("CUUDcCyCrikUvSj0e");
 
-      ratingStars.forEach((star, index) => {
-        star.addEventListener("click", () => {
-          rating = index + 1;
-          updateRating();
-        });
+        var params = {
+          sendername: document.querySelector("#sendername").value,
+          to: document.querySelector("#to").value,
+          subject: document.querySelector("#subject").value,
+          replyto: document.querySelector("#replyto").value,
+          message: document.querySelector("#message").value,
+        };
+        var serviceID = "service_74n4tlj";
+        var templateID = "template_q4upm7r";
 
-        star.addEventListener("mouseover", () => {
-          updateRating(index + 1);
-        });
+        emailjs.send(serviceID, templateID, params).then(
+          function (response) {
+            alert("Email Sent!");
+            // Reset form fields
+            document.getElementById("emailForm").reset();
 
-        star.addEventListener("mouseout", () => {
-          updateRating();
-        });
-      });
-
-      function updateRating(newRating = rating) {
-        ratingStars.forEach((star, index) => {
-          if (index < newRating) {
-            star.style.color = "gold";
-          } else {
-            star.style.color = "#ccc";
+            console.log("SUCCESS!", response.status, response.text);
+          },
+          function (error) {
+            alert("Email failed to send. Please try again later.");
+            console.log("FAILED...", error);
           }
-        });
+        );
       }
-
-      const form = document.querySelector("form");
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const feedback = document.querySelector("#feedback").value;
-        console.log(`Feedback: ${feedback}`);
-        console.log(`Rating: ${rating}`);
-        // Here, you can send the feedback and rating to a server or process them further
-        alert("Thank you for your feedback!");
-        form.reset();
-        rating = 0;
-        updateRating();
-      });
     </script>
   </body>
 </html>

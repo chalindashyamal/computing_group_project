@@ -130,7 +130,7 @@ nav .fa-bars {
 
 #testimonial {
     padding-top: 100px;
-    padding-bottom: 100px;
+   
 }
 
 #testimonial .col-md-4 {
@@ -217,6 +217,30 @@ nav .fa-bars {
 .membership .btn:focus {
     box-shadow: none;
 }
+
+
+/* review */
+
+
+.rating {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    text-align: left;
+  }
+  .rating > span {
+    display: inline-block;
+    position: relative;
+    width: 1.1em;
+    font-size: 30px;
+    color: #ccc;
+    cursor: pointer;
+  }
+  .rating > span:hover:before,
+  .rating > span:hover ~ span:before {
+    content: "\2605";
+    position: absolute;
+    color: gold;
+  }
 
 /* <!-- footer section --> */
 #footer {
