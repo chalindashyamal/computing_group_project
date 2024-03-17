@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bus Tracking System-Admin Panel</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css"
+    />
+
+    <title>Landlord Panel</title>
+    <style>
+      #dashboard-menu {
+        position: fixed;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body class="bg-light">
+    <div
+      class="container-fluid bg-dark text-light p-3 d-flex align-items-center justify-content-between sticky-top"
+    >
+      <h3 class="mb-0 h-font">Bus Tracking System-Admin Dashboard</h3>
+      <a href="admin_login.html" class="btn btn-light btn-sm">LOG OUT</a>
+    </div>
+
+    <div
+      class="col-lg-2 bg-dark border-top border-3 border-secondary"
+      id="dashboard-menu"
+    >
+      <nav class="navbar navbar-expand-lg coustom-bg">
+        <div class="container-fluid flex-lg-column align-items-stretch">
+          <h5 class="mt-2 text-light">Admin panel</h5>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#admindropdown"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div
+            class="collapse navbar-collapse flex-column align-items-stretch mt-2"
+            id="admindropdown"
+          >
+            <ul class="nav nav-pills flex-column">
+              <li class="nav-item">
+                <a class="nav-link text-white" href="admin_page.html"
+                  >Bus Registration</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="add_student.html"
+                  >Student Registration</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="special.html"
+                  >Special Messages</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="add_schedule.html"
+                  >Add Schedule</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="map.html">Map</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="col-lg-10 ms-auto p-4 overflow-hidden">
+      <h3 class="mb-4">Map</h3>
+
+      <div class="modal-header">
+        <h1 class="modal-title fs-5 d-flex align-items-center">
+          <i class="bi bi-geo-alt-fill"></i>View Map
+        </h1>
+      </div>
+      <div id="map" style="width: 80%; height: 60vh; display: none"></div>
+      <div id="mapLoading" class="text-center" style="display: none">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <button class="geo-btn btn text-white bg-primary shadow-none mt-3">
+        Get Current Location
+      </button>
+      <button class="cancel-trip-btn btn text-white bg-danger shadow-none mt-3">
+        Cancel Trip
+      </button>
+      <div class="showDetails"></div>
+      <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+      <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+      <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import {
+          getDatabase,
+          ref,
+          onValue,
+          set,
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyCKYdEtZmhE_GLfR1LsIKf75e_YbQjDvSs",
+          authDomain: "computing-project-f65ec.firebaseapp.com",
+          databaseURL:
+            "https://computing-project-f65ec-default-rtdb.firebaseio.com",
+          projectId: "computing-project-f65ec",
+          storageBucket: "computing-project-f65ec.appspot.com",
+          messagingSenderId: "126022707574",
+          appId: "1:126022707574:web:795b761b783e0dfa62f257",
+          measurementId: "G-XG2N2HVR9M",
+        };
+
+        // Initialize Firebase
+        const firebaseApp = initializeApp(firebaseConfig);
+        const database = getDatabase();
+
+        var map = L.map("map").setView(
+          [6.821556181937362, 80.04158353165411],
+          11
+        );
+        var mapLink = "<a href='http://openstreetmap.org'>OpenStreetMap</a>";
+        L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+          attribution: "Leaflet &copy; " + mapLink + ", contribution",
+          maxZoom: 18,
+        }).addTo(map);
+
+        var taxiIcon = L.icon({
+          iconUrl: "img/bus2-re.png",
+          iconSize: [70, 70],
+        });
+
+        var marker = L.marker([6.821556181937362, 80.04158353165411], {
+          icon: taxiIcon,
+        }).addTo(map);
+
+        var routingControl = null;
+
+        const destinationCoordinates = [6.821556181937362, 80.04158353165411];
+
+        function updateMarkerAndRoute(latitude, longitude) {
+          marker.setLatLng([latitude, longitude]);
+          if (routingControl !== null) {
+            map.removeControl(routingControl);
+          }
+          routingControl = L.Routing.control({
+            waypoints: [
+              L.latLng(latitude, longitude),
+              L.latLng(destinationCoordinates[0], destinationCoordinates[1]),
+            ],
+          }).addTo(map);
+
+          // Update Firebase with new location
+          set(ref(database, "currentLocation"), {
+            latitude: latitude,
+            longitude: longitude,
+            map_view: true, // Set map_view to true
+          });
+
+          // Check if close to destination
+          const distance = calculateDistance(
+            latitude,
+            longitude,
+            destinationCoordinates[0],
+            destinationCoordinates[1]
+          );
+          if (distance < 0.1) {
+            // Adjust threshold as needed
+            alert("You have reached your destination!");
+          }
+        }
+
+        function cancelTrip() {
+          // Update Firebase to cancel trip and set map_view to false
+          set(ref(database, "currentLocation"), {
+            map_view: false, // Set map_view to false
+          });
+
+          // Optionally, remove routing control from map
+          if (routingControl !== null) {
+            map.removeControl(routingControl);
+          }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+          var R = 6371; // Radius of the earth in km
+          var dLat = deg2rad(lat2 - lat1); // deg2rad below
+          var dLon = deg2rad(lon2 - lon1);
+          var a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) *
+              Math.cos(deg2rad(lat2)) *
+              Math.sin(dLon / 2) *
+              Math.sin(dLon / 2);
+          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          var d = R * c; // Distance in km
+          return d;
+        }
+
+        function deg2rad(deg) {
+          return deg * (Math.PI / 180);
+        }
+
+        // Listen for changes in the Firebase database
+        onValue(ref(database, "currentLocation"), (snapshot) => {
+          const data = snapshot.val();
+          if (data.map_view) {
+            document.getElementById("map").style.display = "block";
+            document.getElementById("mapLoading").style.display = "none";
+          } else {
+            // Show loading animation
+            document.getElementById("map").style.display = "none";
+            document.getElementById("mapLoading").style.display = "block";
+          }
+        });
+
+        document
+          .querySelector(".geo-btn")
+          .addEventListener("click", function () {
+            if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(
+                (position) => {
+                  const { latitude, longitude } = position.coords;
+                  updateMarkerAndRoute(latitude, longitude);
+                  document.querySelector(
+                    ".showDetails"
+                  ).textContent = `the latitude ${latitude} & longitude ${longitude}`;
+                },
+                (error) => {
+                  document.querySelector(".showDetails").textContent =
+                    error.message;
+                  console.log(error.message);
+                }
+              );
+            }
+            setInterval(function () {
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                  (position) => {
+                    const { latitude, longitude } = position.coords;
+                    updateMarkerAndRoute(latitude, longitude);
+                    document.querySelector(
+                      ".showDetails"
+                    ).textContent = `the latitude ${latitude} & longitude ${longitude}`;
+                  },
+                  (error) => {
+                    document.querySelector(".showDetails").textContent =
+                      error.message;
+                    console.log(error.message);
+                  }
+                );
+              }
+            }, 5000); // 5 seconds
+          });
+
+        document
+          .querySelector(".cancel-trip-btn")
+          .addEventListener("click", function () {
+            cancelTrip();
+          });
+      </script>
+    </div>
+  </body>
+</html>
