@@ -435,27 +435,34 @@
             "Please select exactly " + numSeats + " seats."
           );
         } else {
-          $("#errorMessage").text("");
-          var allNameVals = [];
-          var allNumberVals = [];
-          var allSeatsVals = [];
+          // Confirm the selection
+          if (confirm("Are you sure you want to confirm the selection?")) {
+            $("#errorMessage").text("");
+            var allNameVals = [];
+            var allNumberVals = [];
+            var allSeatsVals = [];
 
-          allNameVals.push($("#Username").val());
-          allNumberVals.push(numSeats);
-          $(".seats:checked:not(:disabled)").each(function () {
-            allSeatsVals.push($(this).val());
-          });
+            allNameVals.push($("#Username").val());
+            allNumberVals.push(numSeats);
+            $(".seats:checked:not(:disabled)").each(function () {
+              allSeatsVals.push($(this).val());
+            });
 
-          allSeatsVals.forEach(async (x) => {
-            await set(
-              ref(database, `buses/${window.busId}/seats/${x}`),
-              allNameVals[0]
-            );
-          });
+            allSeatsVals.forEach(async (x) => {
+              await set(
+                ref(database, `buses/${window.busId}/seats/${x}`),
+                allNameVals[0]
+              );
+            });
 
-          $("#nameDisplay").val(allNameVals);
-          $("#NumberDisplay").val(allNumberVals);
-          $("#seatsDisplay").val(allSeatsVals);
+            // Display values
+            $("#nameDisplay").val(allNameVals);
+            $("#NumberDisplay").val(allNumberVals);
+            $("#seatsDisplay").val(allSeatsVals);
+
+            // Refresh the page
+            location.reload();
+          }
         }
       };
     </script>
