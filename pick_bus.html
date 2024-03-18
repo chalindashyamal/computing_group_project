@@ -102,7 +102,7 @@
       <!-- Your animation here -->
       <p>Your map is still loading...</p>
     </div>
-    <div class="showDetails"></div>
+    <!-- <div class="showDetails"></div> -->
     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
@@ -112,7 +112,6 @@
         getDatabase,
         ref,
         onValue,
-        set,
       } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
       // Firebase configuration
@@ -127,6 +126,7 @@
         appId: "1:126022707574:web:795b761b783e0dfa62f257",
         measurementId: "G-XG2N2HVR9M",
       };
+
       // Initialize Firebase
       const firebaseApp = initializeApp(firebaseConfig);
       const database = getDatabase();
@@ -166,25 +166,6 @@
             L.latLng(destinationCoordinates[0], destinationCoordinates[1]),
           ],
         }).addTo(map);
-
-        // Update Firebase with new location
-        set(ref(database, "currentLocation"), {
-          latitude: latitude,
-          longitude: longitude,
-          map_view: true, // Set map_view to true
-        });
-
-        // Check if close to destination
-        const distance = calculateDistance(
-          latitude,
-          longitude,
-          destinationCoordinates[0],
-          destinationCoordinates[1]
-        );
-        if (distance < 0.1) {
-          // Adjust threshold as needed
-          alert("You have reached your destination!");
-        }
       }
 
       function cancelTrip() {
@@ -199,47 +180,33 @@
         }
       }
 
-      function calculateDistance(lat1, lon1, lat2, lon2) {
-        var R = 6371; // Radius of the earth in km
-        var dLat = deg2rad(lat2 - lat1); // deg2rad below
-        var dLon = deg2rad(lon2 - lon1);
-        var a =
-          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-          Math.cos(deg2rad(lat1)) *
-            Math.cos(deg2rad(lat2)) *
-            Math.sin(dLon / 2) *
-            Math.sin(dLon / 2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        var d = R * c; // Distance in km
-        return d;
-      }
-
-      function deg2rad(deg) {
-        return deg * (Math.PI / 180);
-      }
-
       // Listen for changes in the Firebase database
       onValue(ref(database, "currentLocation"), (snapshot) => {
         const data = snapshot.val();
         if (data.map_view) {
           document.getElementById("map").style.display = "block";
           document.getElementById("mapLoading").style.display = "none";
-          document.getElementById("animation").style.display = "none"; // Hide animation if map is loaded
         } else {
-          // Show loading animation
+          // Hide the map entirely if trip is canceled
           document.getElementById("map").style.display = "none";
-          document.getElementById("mapLoading").style.display = "block"; // Show map loading animation
-          document.getElementById("animation").style.display = "none";
+          document.getElementById("mapLoading").style.display = "block";
         }
       });
 
-      // Listen for location updates from admin interface
-      onValue(ref(database, "currentLocation"), (snapshot) => {
-        const data = snapshot.val();
-        if (data.latitude && data.longitude) {
-          updateMarkerAndRoute(data.latitude, data.longitude);
+      // Update map every 5 seconds
+      setInterval(function () {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              updateMarkerAndRoute(latitude, longitude);
+            },
+            (error) => {
+              console.log(error.message);
+            }
+          );
         }
-      });
+      }, 5000); // 5 seconds
     </script>
 
     <!-- footer section -->
