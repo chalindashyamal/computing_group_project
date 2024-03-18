@@ -157,7 +157,7 @@
     </div>
 
     <div class="container">
-      <div class="row">
+      <div class="row justify-content-center">
         <div class="col-md-6">
           <div class="card mt-4">
             <div class="card-body">
@@ -189,6 +189,47 @@
                   Start Selecting
                 </button>
               </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card mt-4">
+            <div class="card-body">
+              <h5 class="card-title">Selected Seats</h5>
+              <table class="table Displaytable">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Number of Seats</th>
+                    <th>Seats</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <textarea
+                        id="nameDisplay"
+                        class="form-control"
+                        readonly
+                      ></textarea>
+                    </td>
+                    <td>
+                      <textarea
+                        id="NumberDisplay"
+                        class="form-control"
+                        readonly
+                      ></textarea>
+                    </td>
+                    <td>
+                      <textarea
+                        id="seatsDisplay"
+                        class="form-control"
+                        readonly
+                      ></textarea>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
