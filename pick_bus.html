@@ -186,27 +186,13 @@
         if (data.map_view) {
           document.getElementById("map").style.display = "block";
           document.getElementById("mapLoading").style.display = "none";
+          updateMarkerAndRoute(data.latitude, data.longitude);
         } else {
           // Hide the map entirely if trip is canceled
           document.getElementById("map").style.display = "none";
           document.getElementById("mapLoading").style.display = "block";
         }
       });
-
-      // Update map every 5 seconds
-      setInterval(function () {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const { latitude, longitude } = position.coords;
-              updateMarkerAndRoute(latitude, longitude);
-            },
-            (error) => {
-              console.log(error.message);
-            }
-          );
-        }
-      }, 5000); // 5 seconds
     </script>
 
     <!-- footer section -->
