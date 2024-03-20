@@ -70,10 +70,11 @@
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link text-white" href="add_student.html"
-                  >Student Registration</a
+                <a class="nav-link text-white" href="booking_list.html"
+                  >Seat Booking information</a
                 >
               </li>
+
               <li class="nav-item">
                 <a class="nav-link text-white" href="special.html"
                   >Special Messages</a
@@ -142,6 +143,12 @@
         // Initialize Firebase
         const firebaseApp = initializeApp(firebaseConfig);
         const database = getDatabase();
+
+        function updateMapSize() {
+          setTimeout(function () {
+            map.invalidateSize();
+          }, 100);
+        }
 
         var map = L.map("map").setView(
           [6.821556181937362, 80.04158353165411],
@@ -235,6 +242,7 @@
           if (data.map_view) {
             document.getElementById("map").style.display = "block";
             document.getElementById("mapLoading").style.display = "none";
+            updateMapSize();
           } else {
             // Show loading animation
             document.getElementById("map").style.display = "none";

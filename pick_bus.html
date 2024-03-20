@@ -134,6 +134,12 @@
       const firebaseApp = initializeApp(firebaseConfig);
       const database = getDatabase();
 
+      function updateMapSize() {
+        setTimeout(function () {
+          map.invalidateSize();
+        }, 100);
+      }
+
       var map = L.map("map").setView(
         [6.821556181937362, 80.04158353165411],
         11
@@ -190,6 +196,7 @@
           document.getElementById("map").style.display = "block";
           document.getElementById("mapLoading").style.display = "none";
           updateMarkerAndRoute(data.latitude, data.longitude);
+          updateMapSize();
         } else {
           // Hide the map entirely if trip is canceled
           document.getElementById("map").style.display = "none";
