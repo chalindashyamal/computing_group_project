@@ -45,7 +45,7 @@
   }
   .col-2 img{
     max-width: 100%;
-    padding: 50px 0;
+   
   }
   
   .col-2 h1{
@@ -55,7 +55,7 @@
   }
   .btn{
     display: inline-block;
-    background-color: rgb(138, 194, 253);
+    background-color: rgb(231, 7, 34);
     color: rgb(248, 248, 248);
     padding: 8px 30px;
     margin: 30px 0;
@@ -63,7 +63,7 @@
     transition: 0.5s;
   }
   .btn:hover{
-    background-color:rgb(155, 117, 243);
+    background-color:rgb(180, 5, 27);
   
   }
   
@@ -128,7 +128,7 @@
   #indicator{
     width: 100px;
     border: none;
-    background:  rgb(138, 194, 253);
+    background:  rgb(231, 7, 34);
     height: 3px;
     margin-top: 8px;
     transform: translateX(100px);
