@@ -6,7 +6,7 @@ html {
     scroll-behavior: smooth;
 }
 #header {
-    background-image: url(img/bg_bus.jpeg);
+    background-image: url(img/index_home_bg.webp);
     height: 80vh;
     background-size: cover;
     background-position: center;

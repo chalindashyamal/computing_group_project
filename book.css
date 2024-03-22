@@ -6,14 +6,14 @@ html {
     scroll-behavior: smooth;
 }
 #header {
-    background-image: url(img/book_now.jpeg);
+    background-image: url(img/book\ your\ seat.webp);
     height: 80vh;
     background-size: cover;
     background-position: center;
 }
 .navbar-nav li a {
     float: right;
-    color: #000000 !important;
+    color:rgb(139, 0, 0) !important;
 }
 .navbar-brand img {
     width: 150px;
