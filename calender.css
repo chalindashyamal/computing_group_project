@@ -6,7 +6,7 @@ html {
     scroll-behavior: smooth;
 }
 #header {
-    background-image: url(img/cal_SM.webp);
+    background-image: url(img/busschedule.webp);
     height: 80vh;
     background-size: cover;
     background-position: center;
