@@ -154,7 +154,7 @@
     </div>
 
     <!-- seat selection -->
-    <div class="my-5 px-4">
+    <div class="my-5 px-4" id="seat_selection">
       <h2 class="fw-bold h-font text-center">BOOK YOUR SEATS</h2>
       <div class="h-line bg-dark"></div>
     </div>
@@ -349,12 +349,15 @@
         <p class="card-text">Arrival Time: ${bus.arrival_time}</p>
         <p class="card-text">Departure Time: ${bus.departure_time}</p>
         <!-- Add other fields as needed -->
-        <button
-          type="submit"
-          class="btn bg-primary text-white shadow-none mt-3"
-        >
-          Book Your Seat
-        </button>
+        
+        <!-- Your button -->
+    <button
+        type="button"
+        class="btn bg-primary text-white shadow-none mt-3"
+        onclick="navigateToSeatSelection()"
+    >
+        Book Your Seat
+    </button>
       </div>
     </div>
   `;
@@ -477,6 +480,15 @@
             "<b style='margin-bottom:0px;background:yellow;'>Please Select your Seats NOW!</b>"
           );
           loadSeats();
+        }
+      }
+    </script>
+    <script>
+      function navigateToSeatSelection() {
+        // Scroll to the element with ID "seat_selection"
+        const seatSelectionElement = document.getElementById("seat_selection");
+        if (seatSelectionElement) {
+          seatSelectionElement.scrollIntoView({ behavior: "smooth" });
         }
       }
     </script>
